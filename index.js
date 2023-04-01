@@ -41,6 +41,9 @@ app.use(require("./routes/scoreEditLog"));
 app.use(require("./routes/badges"));
 app.use(require("./routes/quizFront"));
 app.use(require("./routes/quizReport"));
+app.use(require("./routes/quizReview"));
+app.use(require("./routes/quizResult"));
+app.use(require("./routes/feedback"));
 
 app.use("/units", require("./routes/units"));
 app.use("/kts", require("./routes/ktsessions"));

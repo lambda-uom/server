@@ -48,15 +48,22 @@ leaderBoard.get("/getLeaderboardData/:currentUser", async (req, res) => {
         if (user.userRoleId.toString() === userRole?.userRoleId.toString()) {
           if (user._id.toString() === currentUser) {
             currentUserScore = lbdata?.averageScore;
+            console.log();
           }
           finalLeaderboardData.push(lbdata);
         }
       }
     }
   }
+
+  const rank = finalLeaderboardData.findIndex(
+    (obj) => obj.averageScore === currentUserScore
+  );
+
   const finalData = {
     lbData: finalLeaderboardData,
     currentUserScore,
+    rank,
   };
   res.json(finalData);
 });
@@ -64,7 +71,6 @@ leaderBoard.get("/getLeaderboardData/:currentUser", async (req, res) => {
 leaderBoard.get("/getLeaderboardData", async (req, res) => {
   let quizSubmissions = await QuizSubmissions.find();
   let users = await Users.find();
-  let totalScore = 0;
   let leaderboardData = [];
 
   for (let user of users) {
@@ -112,6 +118,7 @@ leaderBoard.get("/getLeaderboardData", async (req, res) => {
       }
     }
   }
+
   res.json(finalLeaderboardData);
 });
 

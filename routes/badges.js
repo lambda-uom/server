@@ -4,7 +4,7 @@ const badges = express.Router();
 const Users = require("../models/user.model");
 const QuizSubmissions = require("../models/quizSubmission.model");
 
-badges.get("/getLeaderboardData/:currentUser", async (req, res) => {
+badges.get("/storeBadge/:currentUser", async (req, res) => {
   let quizSubmissions = await QuizSubmissions.find();
   let users = await Users.find();
   let leaderboardData = [];
@@ -21,13 +21,10 @@ badges.get("/getLeaderboardData/:currentUser", async (req, res) => {
     const averageScore = totalScore / count;
     let lbData = {
       empId: user.empId,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      totalScore,
       averageScore,
     };
-    const userExist = await QuizSubmissions.find({ userId: user._id });
-    if (userExist.length > 0) {
+    const userExist = await QuizSubmissions.find({ userId: user?._id });
+    if (userExist?.length > 0) {
       leaderboardData.push(lbData);
     }
   }
@@ -36,7 +33,7 @@ badges.get("/getLeaderboardData/:currentUser", async (req, res) => {
   let finalLeaderboardData = [];
 
   const { userRoleId } = await Users.findOne({
-    empId: leaderboardData[0].empId,
+    empId: leaderboardData?.[0]?.empId,
   });
 
   finalLeaderboardData = [];
@@ -54,77 +51,78 @@ badges.get("/getLeaderboardData/:currentUser", async (req, res) => {
   const currentUser = req.params.currentUser;
   const userEmpId = await Users.findOne({ _id: currentUser });
   let rank = finalLeaderboardData.findIndex(
-    (data) => data.empId === userEmpId.empId
+    (data) => data?.empId === userEmpId?.empId
   );
 
   switch (rank) {
     case 0:
-      userEmpId.badges.push({
+      userEmpId?.badges?.push({
         badgeValue: "Gold",
         earnedOn: Date.now(),
       });
-      userEmpId.save((err) => {
+      userEmpId?.save((err) => {
         if (err) {
-          console.log(err);
+          res.status(500).send(err);
         } else {
-          console.log("Gold badge added successfully");
+          res.status(200).send("Gold badge added successfully");
         }
       });
       break;
     case 1:
-      userEmpId.badges.push({
+      userEmpId?.badges.push({
         badgeValue: "Silver",
         earnedOn: Date.now(),
       });
-      userEmpId.save((err) => {
+      userEmpId?.save((err) => {
         if (err) {
-          console.log(err);
+          res.status(500).send(err);
         } else {
-          console.log("Silver badge added successfully");
+          res.status(200).send("Silver badge added successfully");
         }
       });
       break;
     case 2:
-      userEmpId.badges.push({
+      userEmpId?.badges?.push({
         badgeValue: "Bronze",
         earnedOn: Date.now(),
       });
-      userEmpId.save((err) => {
+      userEmpId?.save((err) => {
         if (err) {
-          console.log(err);
+          res.status(500).send(err);
         } else {
-          console.log("Bronze badge added successfully");
+          res.status(200).send("Bronze badge added successfully");
         }
       });
       break;
+    default:
+      res.json("Badge is not applicable for this user");
   }
-
-  res.json(finalLeaderboardData);
 });
 
 badges.get("/showbadge/:currentUser", async (req, res) => {
   const currentuser = req.params.currentUser;
   const user = await Users.findOne({ _id: currentuser });
+  console.log(user.hasOwnProperty(badges));
 
-  if (!user || !user.hasOwnProperty("badges")) {
-    res.status(404).send("User or badge field not found");
+  if (!user) {
+    res.status(404).send("User field not found");
     return;
   }
-
+  let badgeArr = [];
   user?.badges.forEach((badge, index) => {
-    if (index === user?.badges.length - 1)
-      switch (badge.badgeValue) {
-        case "Gold":
-          res.json(0);
-          break;
-        case "Silver":
-          res.json(1);
-          break;
-        case "Bronze":
-          res.json(2);
-          break;
-      }
+    switch (badge.badgeValue) {
+      case "Gold":
+        badgeArr.push(0);
+        break;
+      case "Silver":
+        badgeArr.push(1);
+        break;
+      case "Bronze":
+        badgeArr.push(2);
+        break;
+    }
   });
+  res.json(badgeArr);
 });
 
 module.exports = badges;

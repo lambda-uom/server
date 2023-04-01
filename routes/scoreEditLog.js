@@ -79,7 +79,7 @@ scoreEditLog.get("/getScoreEditLog", async (req, res) => {
 
     //getting submitted employee name
     const [user] = await Users.find({ _id: editlog.submittedBy });
-    const name = user.firstName + " " + user.lastName;
+    const name = user?.firstName + " " + user?.lastName;
 
     //getting graded supervisor name
     const [upgradedBy] = await Users.find({ _id: editlog.upgradedBy });
