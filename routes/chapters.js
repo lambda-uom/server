@@ -142,7 +142,6 @@ chapterRoutes.route("/chapters/:id").put(async (req, res) => {
   const { id } = req.params;
   const { status, deleteReason } = req.body;
 
-
   try {
     const updatedChapter = await Chapter.findByIdAndUpdate(
       id,
