@@ -10,7 +10,6 @@ const { MulterError } = require('multer');
 const mongoose = require('mongoose');
 const fs = require("fs");
 
-
 assignmentRoute.use(
     '/download/submission-attachments/',
     express.static(path.join(__dirname, '../uploads/finalAssignmentAttachments'))
@@ -142,6 +141,7 @@ assignmentRoute.route("/addFinalAssignment").post(
                     projectDescription: req.body.description,
                     projectDeadLine: req.body.deadline,
                     uploadedFileBySupervisor: "http://localhost:1337/download/submission-attachments/" + req.file.filename,
+                    supAttachNewFileName: req.file.filename,
                     supAttachOriginalName: req.file.originalname,
                     supAttachFileSize: req.file.size,
                     acceptedBy: req.body.supervisor,
@@ -292,6 +292,24 @@ assignmentRoute.route("/finalprojectassignment/updateFinalProjectAssignment").po
                 status: false,
             });
         }
+        if (newFileData || req.body.needtoDeleteAttachment === "true") {
+            FinalProjectAssignment.findOne({ _id: req.body.finalprojectassignmentid }, (err, assignmentData) => {
+                console.log(typeof (assignmentData?.supAttachNewFileName))
+                if (assignmentData?.supAttachNewFileName.trim() === "") {
+                    console.log("No q")
+                }
+                else {
+                    const filePath = path.join(__dirname, `../uploads/finalAssignmentAttachments/${assignmentData?.supAttachNewFileName}`);
+                    fs.unlink(filePath, (err) => {
+                        if (err) {
+                            console.error(err)
+                        } else {
+                            console.log("File Deleted")
+                        }
+                    });
+                }
+            })
+        }
         let setObject;
         if (newFileData) {
             setObject = {
@@ -299,6 +317,7 @@ assignmentRoute.route("/finalprojectassignment/updateFinalProjectAssignment").po
                 projectDeadLine: newDeadLine,
                 projectName: newTitle,
                 uploadedFileBySupervisor: "http://localhost:1337/download/submission-attachments/" + newFileData.filename,
+                supAttachNewFileName: newFileData.filename,
                 supAttachOriginalName: req.file.originalname,
                 supAttachFileSize: req.file.size,
                 assignedOn: Date.now()
@@ -313,6 +332,7 @@ assignmentRoute.route("/finalprojectassignment/updateFinalProjectAssignment").po
                     uploadedFileBySupervisor: "",
                     supAttachOriginalName: "",
                     supAttachFileSize: "",
+                    supAttachNewFileName: ""
                 }
             } else {
                 setObject = {
@@ -323,6 +343,7 @@ assignmentRoute.route("/finalprojectassignment/updateFinalProjectAssignment").po
                 }
             }
         }
+
         try {
             FinalProjectAssignment.updateOne(
                 { _id: finalProjectAssignmentID },
@@ -350,9 +371,19 @@ assignmentRoute.route("/finalprojectassignment/updateFinalProjectAssignment").po
 
 assignmentRoute.route("/finalprojectassignment/deleteAssignedAssignment").post(async (req, res) => {
     const projectID = req.body.projectID;
+    // "http://localhost:1337/download/submission-attachments/" + req.file.filename,
     try {
         const assignments = await FinalProjectAssignment.findOne({ _id: projectID })
         if (assignments) {
+            const filePath = path.join(__dirname, `../uploads/finalAssignmentAttachments/${assignments?.supAttachNewFileName}`);
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    console.error(err)
+                } else {
+                    console.log("File Deleted")
+                }
+            });
+            assignments.supAttachNewFileName = undefined;
             assignments.isProjectAssigned = false;
             assignments.acceptedBy = undefined;
             assignments.assignedOn = undefined;
