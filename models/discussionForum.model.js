@@ -5,7 +5,7 @@ const Forum = new mongoose.Schema(
     topic: { type: String },
     description: { type: String },
     createdBy: { type: mongoose.Types.ObjectId, ref: "UserData" },
-    createdOn: { type: String },
+    createdOn: { type: Date, default: Date.now() },
     status: { type: String, default: "Active" },
     attachmentAllowed: { type: Boolean, default: false },
     posts: [

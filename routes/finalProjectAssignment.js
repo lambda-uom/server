@@ -8,6 +8,8 @@ const { finalAssignmentAttachmentUpload } = require("../multer/finalAssignmentAt
 const { finalAssignmentSubmissionsUpload } = require("../multer/finalAssignmentSubmissions-config")
 const { MulterError } = require('multer');
 const mongoose = require('mongoose');
+const fs = require("fs");
+
 
 assignmentRoute.use(
     '/download/submission-attachments/',

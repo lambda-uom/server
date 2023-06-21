@@ -45,11 +45,13 @@ commonchapterRoutes.route("/commonchapters/isChapterAvailable").post(function (r
 commonchapterRoutes.route("/commonchapters/addChapter").post(async (req, res) => {
 
     const chapterName = req.body.chapterName;
+    const chapId = req.body.chapId;
     const createdBy = req.body.userID;
     const createdOn = Date.now();
 
     const chapterDetails = new Chapter({
         chapterName,
+        chapId,
         createdBy,
         createdOn,
     });

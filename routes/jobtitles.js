@@ -142,30 +142,6 @@ jobtitleRoutes.route("/jobtitles/deleteJobtitle").post(async (req, res) => {
   }
 })
 
-
-// jobtitleRoutes.route("/jobtitles/deleteJobtitle").post(async (req, res) => {
-//   const id = req.body.id;
-//   try {
-//     const departments = await Department.findOne({ "Jobtitle._id": id });
-//     // Remove the job title from the Jobtitle array
-//     departments.Jobtitle = departments.Jobtitle.filter(
-//       (jobtitle) => jobtitle._id.toString() !== id
-//     );
-//     // Save the updated Department object
-//     await departments.save();
-
-//     return res.json({
-//       message: "Jobtitle deleted successfully",
-//       status: true,
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     return res.json({
-//       message: "Error deleting jobtitle",
-//       status: false,
-//     });
-//   }
-// })
 //----------------------------------------------------------------------------------------------
 jobtitleRoutes.route("/jobtitles/allocatechapter").post(async (req, res) => {
   chaptersAllocated = req.body.chaptersAllocated;

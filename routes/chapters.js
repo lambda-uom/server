@@ -4,95 +4,7 @@ const Chapter = require("../models/chapter.model");  //import the chapter model
 const User = require("../models/user.model");
 const Department = require("../models/department.model");
 
-chapterRoutes.route("/chapters/departmentChapters/:depid/").get(function (req, res) {
-  const depid = req.params.depid;
-  Chapter.find({ depID: depid }, (err, chapters) => {
-    if (err) {
-      return res.json({ status: false, message: err })
-    } else {
-      return res.json(chapters);
-    }
-  })
-});
 
-chapterRoutes.route("/chapters/loadAllocatedChapters/:depid/:jobid").get(function (req, res) {
-  const depid = req.params.depid;
-  const jobid = req.params.jobid;
-  Department.findById(depid)
-    .populate({ path: 'Jobtitle.chaptersAllocated', select: "_id chapterName" })
-    .exec((err, departments) => {
-      if (err) {
-        res.json({ status: false, message: "Database Error" });
-      } else {
-        const chapterList = departments.Jobtitle.find((chapter) => chapter._id == jobid);
-        if (chapterList) {
-          res.json(chapterList);
-        } else {
-          res.json([]);
-        }
-      }
-    })
-});
-
-chapterRoutes.route("/chapters/loadAdditionalChapters/:uid").get(function (req, res) {
-  const uid = req.params.uid;
-  User.findById(uid, { acceptedAdditionalChapter: 1 })
-    .populate({ path: "acceptedAdditionalChapter", select: " _id chapterName" })
-    .exec((err, users) => {
-      if (err) {
-        res.json({ status: false, message: "Database Error" });
-      } else {
-        res.json(users);
-      }
-    })
-});
-
-chapterRoutes.route("/chapters/acceptRequest").post(function (req, res) {
-  const empid = req.body.empid;
-  const chapid = req.body.chapid;
-  const action = req.body.action;
-  Chapter.updateOne({ _id: chapid }, { $pull: { requested: empid } }, (err, chapters) => {
-    if (err) {
-      console.log(err);
-      res.json(
-        {
-          status: false,
-          message: "Error in update Chapter data"
-        },
-      );
-    } else {
-      // console.log(chapters);
-      if (action == 1) {
-        User.updateOne({ _id: empid }, { $push: { acceptedAdditionalChapter: chapid } }, (err, users) => {
-          if (err) {
-            console.log(err);
-            res.json(
-              {
-                status: false,
-                message: "Error in update User data"
-              },
-            );
-          } else {
-            console.log("Success")
-            res.json(
-              {
-                status: true,
-                message: "Chapter Request Accepted successfully"
-              },
-            );
-          }
-        });
-      } else {
-        res.json(
-          {
-            status: true,
-            message: "Chapter Request declined successfully"
-          },
-        );
-      }
-    }
-  })
-});
 
 chapterRoutes.route("/chapters").get(function (req, res) {
   res.json([
@@ -134,12 +46,14 @@ chapterRoutes.route("/chapters/isChapterAvailable").post(function (req, res) {
 chapterRoutes.route("/chapters/addChapter").post(async (req, res) => {
 
   const chapterName = req.body.chapterName;
+  const chapId = req.body.chapId;
   const depID = req.body.depID;
   const createdBy = req.body.userID;
   const createdOn = Date.now();
 
   const chapterDetails = new Chapter({
     chapterName,
+    chapId,
     depID,
     createdBy,
     createdOn,
@@ -226,6 +140,35 @@ chapterRoutes.route("/chapters/deleteChapter").post(async (req, res) => {
 //-----------------------------------------------------------------------------------
 chapterRoutes.route("/chapters/:id").put(async (req, res) => {
   const { id } = req.params;
+  const { status, deleteReason } = req.body;
+
+
+  try {
+    const updatedChapter = await Chapter.findByIdAndUpdate(
+      id,
+      { status: status, deleteReason: deleteReason }, // Include the delete reason in the update
+      { new: true }
+    );
+
+    if (!updatedChapter) {
+      return res.status(404).send({
+        message: `Chapter is not found.`,
+      });
+    }
+
+    res.send({
+      message: `Chapter temporarily deleted successfully.`,
+      data: updatedChapter,
+    });
+  } catch (err) {
+    res.status(500).send({
+      message: `Error deleting Chapter: ${err.message}`,
+    });
+  }
+});
+//------------------------------------------------------------------------------------------
+chapterRoutes.route("/retrievechapters/:id").put(async (req, res) => {
+  const { id } = req.params;
   const { status } = req.body;
 
   Chapter.findByIdAndUpdate(id, { status: status }, { new: true })
@@ -236,7 +179,7 @@ chapterRoutes.route("/chapters/:id").put(async (req, res) => {
         });
       }
       res.send({
-        message: `Chapter was temporarly deleted successfully.`,
+        message: `Chapter retrieved successfully.`,
         data: updatedChapter
       });
     })
@@ -288,38 +231,86 @@ chapterRoutes.route("/chapters/getEnrolledChapters/:depID").get(async (req, res)
 });
 
 //---------------------------------------------------------------------------------------------------
+chapterRoutes.route("/chapters/loadAllocatedChapters/:depid/:jobid").get(function (req, res) {
+  const depid = req.params.depid;
+  const jobid = req.params.jobid;
+  Department.findById(depid)
+    .populate({ path: 'Jobtitle.chaptersAllocated', select: "_id chapterName" })
+    .exec((err, departments) => {
+      if (err) {
+        res.json({ status: false, message: "Database Error" });
+      } else {
+        const chapterList = departments.Jobtitle.find((chapter) => chapter._id == jobid);
+        if (chapterList) {
+          res.json(chapterList);
+        } else {
+          res.json([]);
+        }
+      }
+    })
+});
+
+chapterRoutes.route("/chapters/loadAdditionalChapters/:uid").get(function (req, res) {
+  const uid = req.params.uid;
+  User.findById(uid, { acceptedAdditionalChapter: 1 })
+    .populate({ path: "acceptedAdditionalChapter", select: " _id chapterName" })
+    .exec((err, users) => {
+      if (err) {
+        res.json({ status: false, message: "Database Error" });
+      } else {
+        res.json(users);
+      }
+    })
+});
+
+chapterRoutes.route("/chapters/acceptRequest").post(function (req, res) {
+  const empid = req.body.empid;
+  const chapid = req.body.chapid;
+  const action = req.body.action;
+  Chapter.updateOne({ _id: chapid }, { $pull: { requested: empid } }, (err, chapters) => {
+    if (err) {
+      console.log(err);
+      res.json(
+        {
+          status: false,
+          message: "Error in update Chapter data"
+        },
+      );
+    } else {
+      // console.log(chapters);
+      if (action == 1) {
+        User.updateOne({ _id: empid }, { $push: { acceptedAdditionalChapter: chapid } }, (err, users) => {
+          if (err) {
+            console.log(err);
+            res.json(
+              {
+                status: false,
+                message: "Error in update User data"
+              },
+            );
+          } else {
+            console.log("Success")
+            res.json(
+              {
+                status: true,
+                message: "Chapter Request Accepted successfully"
+              },
+            );
+          }
+        });
+      } else {
+        res.json(
+          {
+            status: true,
+            message: "Chapter Request declined successfully"
+          },
+        );
+      }
+    }
+  })
+});
 
 module.exports = chapterRoutes;
 
 
 
-// chapterRoutes.route("/chapters/acceptChapter").post(async (req, res) => {
-//   const chapID = req.body.chapID;
-//   const userID = req.body.userID;
-//   try {
-//     const document = await Chapter.findById(chapID);
-//     document.accepted.push(userID);
-//     Chapter.updateOne(
-//       { _id: chapID },
-//       { $set: { accepted: document.accepted } }
-//     )
-//       .then((result) => {
-//         return res.json({
-//           message: "Chapter accepted Successfully",
-//           status: true,
-//         });
-//       })
-//       .catch((err) => {
-//         return res.json({
-//           message: "Error in accepted Chapter Name",
-//           status: false,
-//         });
-//       });
-//   } catch {
-//     return res.json({
-//       message: "Chapter Not Found. Try Again !!!",
-//       status: false,
-//     });
-//   }
-
-// });

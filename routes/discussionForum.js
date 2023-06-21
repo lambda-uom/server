@@ -7,6 +7,7 @@ forumRoutes.route("/get-forums-by-chapter/:chptId").get(function (req, res) {
   const { chptId } = req.params;
   Forum.find({ belongsToChapter: chptId })
     .populate("createdBy")
+    .sort({ createdOn: -1 })
     .exec((err, forums) => {
       if (err) {
         res.status(500).send(err);
@@ -107,9 +108,6 @@ forumRoutes.route("/edit-forum/:id").put(function (req, res) {
 
 forumRoutes.route("/create-forum").post(async (req, res) => {
   const forum = new Forum(req.body);
-
-  // Format the updated_at date
-  forum.createdOn = moment().format("YYYY-MM-DD hh:mm:ss.SS A");
 
   forum
     .save()

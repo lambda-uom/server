@@ -1,36 +1,35 @@
 const mongoose = require("mongoose");
 
-const EditArticle = new mongoose.Schema(
+const EditForum = new mongoose.Schema(
   {
     chapterName: {
       type: String,
       required: true,
     },
-    articleName: {
+    forumTopic: {
       type: String,
       required: true,
     },
-    articleDesc: {
+    forumDesc: {
       type: String,
       required: true,
     },
-    // updated_at: {
-    //   type: Date,
-    //   default: Date.now
-    // },
+    attachmentStatus: { type: Boolean, default: false },
+
     updated_at: {
       type: String,
     },
     old_data: {
-      articleName: String,
-      articleDesc: String,
+      topic: String,
+      description: String,
+      attachmentAllowed: Boolean,
     },
     updatedby: { type: mongoose.Types.ObjectId, ref: "UserData" },
   },
   {
-    collection: "editarticles",
+    collection: "editforums",
   }
 );
 
-const model = mongoose.model("EditArticleData", EditArticle);
+const model = mongoose.model("EditForumData", EditForum);
 module.exports = model;

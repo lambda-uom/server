@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const commonChapter = new mongoose.Schema(
     {
+        chapId: { type: String, required: true, unique: true },
         chapterName: { type: String, required: true, unique: true },
         createdBy: { type: mongoose.Types.ObjectId, ref: "UserData" },
         createdOn: { type: Date, default: Date.now },

@@ -41,18 +41,3 @@ const auth = (userRoles) => {
 };
 
 module.exports = auth;
-
-/**
-axios.get('https://example.com/api/data', {
-  headers: {
-    'token': 'Bearer ' + token,
-    'Content-Type': 'application/json'
-  }
-})
-  .then(response => {
-    console.log(response.data);
-  })
-  .catch(error => {
-    console.error(error);
-  }); 
-*/
