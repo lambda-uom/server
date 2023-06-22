@@ -38,13 +38,7 @@ const Article = new mongoose.Schema(
         ],
       },
     ],
-    createdBy: { type: mongoose.Types.ObjectId, ref: "UserData" },
     createdOn: { type: Date, default: Date.now },
-    overallRating: { type: Number },
-    overallQuality: { type: Number },
-    overallComm: { type: Number },
-    overallClarity: { type: Number },
-    overallKnowledgeAndSkill: { type: Number },
   },
   {
     collection: "articles",
