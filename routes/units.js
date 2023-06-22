@@ -1,7 +1,7 @@
 const express = require("express");
 const Unit = express.Router();
 const UnitData = require("../models/unit.model");
-
+const Chapter = require("../models/chapter.model");  //import the chapter model
 // Unit.route('/').get(function(req, res) {
 //   UnitData.find(function(err, units) {
 //         if (err) {
@@ -39,8 +39,14 @@ Unit.route("/add").post(function(req, res) {
   let units = new UnitData(req.body);
   units
     .save()
-    .then((units) => {
-      res.status(200).json({ units: "unit added successfully" });
+    .then((u) => {
+      console.log(u);
+      Chapter.updateOne({ _id: units.belongsToChapter }, { $push: { unitsOffer: u._id } }, (err, data) => {
+        if (err) {
+          return res.status(400).send("adding new unit failed");
+        }
+        res.status(200).json({ units: "unit added successfully" });
+      })
     })
     .catch((err) => {
       res.status(400).send("adding new unit failed");
