@@ -4,13 +4,15 @@ const EditForumData = require("../models/editForum.model");
 const moment = require("moment");
 
 editForumRoutes.route("/").get(function (req, res) {
-  EditForumData.find(function (err, todo) {
-    if (err) {
-      console.log(err);
-    } else {
-      res.json(todo);
-    }
-  });
+  EditForumData.find()
+    .populate("updatedby")
+    .exec(function (err, todo) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.json(todo);
+      }
+    });
 });
 
 editForumRoutes.route("/add").post(function (req, res) {

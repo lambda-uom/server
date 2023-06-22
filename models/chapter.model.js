@@ -10,7 +10,6 @@ const Chapter = new mongoose.Schema(
     offeredInJobTitles: { type: String }, //array objectId from DepartmentData
     reasons: [{ type: Object }],
     status: { type: String, default: "active" },
-    unitsOffer: [{ type: mongoose.Types.ObjectId, ref: "UnitData" }],
     requested: [{ type: Schema.Types.ObjectId, ref: "UserData" }],
     accepted: [{ type: Schema.Types.ObjectId, ref: "UserData" }],
   },

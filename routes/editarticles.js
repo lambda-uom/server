@@ -4,13 +4,15 @@ const EditArticleData = require("../models/editArticle.model");
 const moment = require("moment");
 
 editarticleRoutes.route("/").get(function (req, res) {
-  EditArticleData.find(function (err, todo) {
-    if (err) {
-      console.log(err);
-    } else {
-      res.json(todo);
-    }
-  });
+  EditArticleData.find()
+    .populate("updatedby")
+    .exec(function (err, todo) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.json(todo);
+      }
+    });
 });
 
 editarticleRoutes.route("/add").post(function (req, res) {

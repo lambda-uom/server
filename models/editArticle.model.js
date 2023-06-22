@@ -6,6 +6,7 @@ const EditArticle = new mongoose.Schema(
       type: String,
       required: true,
     },
+    articleId: { type: mongoose.Types.ObjectId, ref: "ArticleData" },
     articleName: {
       type: String,
       required: true,

@@ -4,13 +4,15 @@ const editunitRoutes = express.Router();
 const EditUnitData = require("../models/editunit.model");
 
 editunitRoutes.route("/").get(function (req, res) {
-  EditUnitData.find(function (err, todo) {
-    if (err) {
-      console.log(err);
-    } else {
-      res.json(todo);
-    }
-  });
+  EditUnitData.find()
+    .populate("updatedby")
+    .exec(function (err, todo) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.json(todo);
+      }
+    });
 });
 
 editunitRoutes.route("/add").post(function (req, res) {
