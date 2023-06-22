@@ -4,7 +4,16 @@ const Chapter = require("../models/chapter.model");  //import the chapter model
 const User = require("../models/user.model");
 const Department = require("../models/department.model");
 
-
+chapterRoutes.route("/chapters/departmentChapters/:depid/").get(function (req, res) {
+  const depid = req.params.depid;
+  Chapter.find({ depID: depid }, (err, chapters) => {
+    if (err) {
+      return res.json({ status: false, message: err })
+    } else {
+      return res.json(chapters);
+    }
+  })
+});
 
 chapterRoutes.route("/chapters").get(function (req, res) {
   res.json([
@@ -41,8 +50,6 @@ chapterRoutes.route("/chapters/isChapterAvailable").post(function (req, res) {
   });
 });
 
-//----------------------------------------------------------------------------------------
-
 chapterRoutes.route("/chapters/addChapter").post(async (req, res) => {
 
   const chapterName = req.body.chapterName;
@@ -77,7 +84,6 @@ chapterRoutes.route("/chapters/addChapter").post(async (req, res) => {
       res.status(500).send({ error: err });
     });
 });
-//----------------------------------------------------------------------------------
 
 chapterRoutes.route("/chapters/editChapter").post(async (req, res) => {
   // console.log(req.body);
@@ -119,7 +125,6 @@ chapterRoutes.route("/chapters/editChapter").post(async (req, res) => {
     });
   }
 });
-// ------------------------------------------------------------------------------
 
 chapterRoutes.route("/chapters/deleteChapter").post(async (req, res) => {
   id = req.body.id;
@@ -137,7 +142,6 @@ chapterRoutes.route("/chapters/deleteChapter").post(async (req, res) => {
   }
 });
 
-//-----------------------------------------------------------------------------------
 chapterRoutes.route("/chapters/:id").put(async (req, res) => {
   const { id } = req.params;
   const { status, deleteReason } = req.body;
@@ -166,7 +170,7 @@ chapterRoutes.route("/chapters/:id").put(async (req, res) => {
     });
   }
 });
-//------------------------------------------------------------------------------------------
+
 chapterRoutes.route("/retrievechapters/:id").put(async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
@@ -189,7 +193,6 @@ chapterRoutes.route("/retrievechapters/:id").put(async (req, res) => {
       });
     });
 });
-//------------------------------------------------------------------------------------------
 
 chapterRoutes.route("/chapters/enrollChapter").post(async (req, res) => {
   const chapID = req.body.chapID;
@@ -222,7 +225,6 @@ chapterRoutes.route("/chapters/enrollChapter").post(async (req, res) => {
 
 });
 
-//--------------------------------------------------------------------------------------------
 chapterRoutes.route("/chapters/getEnrolledChapters/:depID").get(async (req, res) => {
   const depID = req.params.depID;  //The value of the 'depID' parameter is assigned to a constant variable 'depID'.
   const chapters = await Chapter.find({ depID: depID, requested: { $ne: [] } })
@@ -230,7 +232,6 @@ chapterRoutes.route("/chapters/getEnrolledChapters/:depID").get(async (req, res)
   res.json(chapters);
 });
 
-//---------------------------------------------------------------------------------------------------
 chapterRoutes.route("/chapters/loadAllocatedChapters/:depid/:jobid").get(function (req, res) {
   const depid = req.params.depid;
   const jobid = req.params.jobid;
