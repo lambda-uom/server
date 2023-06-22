@@ -3,7 +3,8 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
-
+const path = require("path");
+const fs = require("fs");
 app.use(
   cors({
     origin: ["http://localhost:3000"],
@@ -64,13 +65,6 @@ app.use("/deletearticles", require("./routes/deletearticles"));
 app.use("/deletequestions", require("./routes/deletequestions"));
 
 mongoose.set("strictQuery", false);
-// format
-
-// mongodb+srv://<username>:<password>@cluster0.mongodb.net/<database>?retryWrites=true&w=majority
-// const connUrl = "mongodb://127.0.0.1:27017/nets";
-// const connUrl = "mongodb://localhost:27017/NETS";
-// "mongodb+srv://admin:o2rRfSYGKkUCHG8s@cluster0.eh378xa.mongodb.net/netsTest?retryWrites=true&w=majority";
-
 mongoose
   .connect(process.env.MONGO_LOCAL_URI, {
     useUnifiedTopology: true,
@@ -84,6 +78,24 @@ app.get("/", (req, res) => {
   return res.json({
     message: "Access to this page is not allowed",
     active: false,
+  });
+});
+
+
+app.get("/file/:filename", (req, res) => {
+  const filename = req.params.filename;
+  if(! filename){
+    return res.status(200).send("Please provide a filename");
+  }
+  // Replace with the actual file path
+  const filePath = path.join(__dirname, `/uploads/finalAssignmentSubmissions/${filename}`);
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send("Failed to delete the file.");
+    } else {
+      res.send("File deleted successfully.");
+    }
   });
 });
 

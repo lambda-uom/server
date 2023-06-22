@@ -76,6 +76,7 @@ badges.post("/storeBadge", async (req, res) => {
     leaderboard.findIndex(
       (emp) => emp?.empId === empId && (currentUserRank = emp?.rank)
     );
+    console.log(currentUserRank);
     if (quizSubmission?.badgeGiven === false) {
       // if rank is less than 4
       switch (currentUserRank) {

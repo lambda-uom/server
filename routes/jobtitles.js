@@ -44,6 +44,8 @@ jobtitleRoutes
     });
   });
 //-------------------------------------------------------------------------------------------
+
+
 jobtitleRoutes.route("/jobtitles/addJobtitle").post(async (req, res) => {
   const jobTitlename = req.body.jobtitleName;
   const depID = req.body.depID;
@@ -142,30 +144,6 @@ jobtitleRoutes.route("/jobtitles/deleteJobtitle").post(async (req, res) => {
   }
 })
 
-
-// jobtitleRoutes.route("/jobtitles/deleteJobtitle").post(async (req, res) => {
-//   const id = req.body.id;
-//   try {
-//     const departments = await Department.findOne({ "Jobtitle._id": id });
-//     // Remove the job title from the Jobtitle array
-//     departments.Jobtitle = departments.Jobtitle.filter(
-//       (jobtitle) => jobtitle._id.toString() !== id
-//     );
-//     // Save the updated Department object
-//     await departments.save();
-
-//     return res.json({
-//       message: "Jobtitle deleted successfully",
-//       status: true,
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     return res.json({
-//       message: "Error deleting jobtitle",
-//       status: false,
-//     });
-//   }
-// })
 //----------------------------------------------------------------------------------------------
 jobtitleRoutes.route("/jobtitles/allocatechapter").post(async (req, res) => {
   chaptersAllocated = req.body.chaptersAllocated;
@@ -196,3 +174,49 @@ jobtitleRoutes.route("/jobtitles/allocatechapter").post(async (req, res) => {
 });
 
 module.exports = jobtitleRoutes;
+
+
+
+
+//after the existing jobtitle validation- addjobtitle
+
+
+// jobtitleRoutes.route("/jobtitles/addJobtitle").post(async (req, res) => {
+//   const jobTitlename = req.body.jobtitleName;
+//   const depID = req.body.depID;
+
+//   try {
+//     const department = await Department.findById(depID);
+//     if (!department) {
+//       return res.json({
+//         message: "Department not found",
+//         status: false,
+//       });
+//     }
+
+//     const existingJobTitle = department.Jobtitle.find(
+//       (jobtitle) => jobtitle.jobTitlename === jobTitlename
+//     );
+//     if (existingJobTitle) {
+//       return res.json({
+//         message: "Jobtitle already exists",
+//         status: false,
+//       });
+//     }
+
+//     const createdOn = Date.now();
+//     department.Jobtitle.push({ jobTitlename, createdOn });
+//     await department.save();
+
+//     return res.json({
+//       message: "Jobtitle Added Successfully",
+//       status: true,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     return res.json({
+//       message: "Error adding jobtitle",
+//       status: false,
+//     });
+//   }
+// });

@@ -16,6 +16,7 @@ const FinalProjectAssignment = new mongoose.Schema(
     uploadedFileBySupervisor: { type: String },
     supAttachOriginalName: { type: String },
     supAttachFileSize: { type: String },
+    supAttachNewFileName: { type: String },
     assignedOn: { type: Date },
     acceptedBy: { type: mongoose.Types.ObjectId, ref: "UserData" },
 

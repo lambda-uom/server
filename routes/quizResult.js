@@ -76,5 +76,19 @@ result.get("/result/:currentUser/:unitId", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+result.get("/checkSubmitted/:unitId/:userId", async (req, res) => {
+  try {
+    const unitId = req.params.unitId;
+    const userId = req.params.userId;
+    const isSubmitted = await QuizSubmissions.findOne({ userId, unitId });
+    if (isSubmitted) {
+      res.json(true);
+    } else {
+      res.json(false);
+    }
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 module.exports = result;
