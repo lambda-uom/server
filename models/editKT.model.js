@@ -6,6 +6,7 @@ const EditKT = new mongoose.Schema(
       type: String,
       required: true,
     },
+    sessionId: { type: mongoose.Types.ObjectId, ref: "KtSessionData" },
     sessionName: {
       type: String,
       required: true,

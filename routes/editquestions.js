@@ -4,13 +4,15 @@ const EditQuestionData = require("../models/editQuesion.model");
 const moment = require("moment");
 
 editquestionRoutes.route("/").get(function (req, res) {
-  EditQuestionData.find(function (err, todo) {
-    if (err) {
-      console.log(err);
-    } else {
-      res.json(todo);
-    }
-  });
+  EditQuestionData.find()
+    .populate("updatedby")
+    .exec(function (err, todo) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.json(todo);
+      }
+    });
 });
 
 editquestionRoutes.route("/add").post(function (req, res) {
