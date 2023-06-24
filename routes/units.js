@@ -12,13 +12,13 @@ const Chapter = require("../models/chapter.model");  //import the chapter model
 //     });
 // });
 
-Unit.route("/").get(function (req, res) {
+Unit.route("/").get(function(req, res) {
   const { chapterId } = req.query;
 
   // Filter the Units based on the chapterId
   const query = chapterId ? { belongsToChapter: chapterId } : {};
 
-  UnitData.find(query, function (err, units) {
+  UnitData.find(query, function(err, units) {
     if (err) {
       console.log(err);
       res.status(500).json({ error: "Internal Server Error" });
@@ -28,14 +28,14 @@ Unit.route("/").get(function (req, res) {
   });
 });
 
-Unit.route("/:id").get(function (req, res) {
+Unit.route("/:id").get(function(req, res) {
   let id = req.params.id;
-  UnitData.findById(id, function (err, units) {
+  UnitData.findById(id, function(err, units) {
     res.json(units);
   });
 });
 
-Unit.route("/add").post(function (req, res) {
+Unit.route("/add").post(function(req, res) {
   let units = new UnitData(req.body);
   units
     .save()
@@ -53,8 +53,8 @@ Unit.route("/add").post(function (req, res) {
     });
 });
 
-Unit.route("/update/:id").post(function (req, res) {
-  UnitData.findById(req.params.id, function (err, units) {
+Unit.route("/update/:id").post(function(req, res) {
+  UnitData.findById(req.params.id, function(err, units) {
     if (!units) {
       res.status(404).send("data is not found");
     } else {
@@ -85,8 +85,8 @@ Unit.route("/delete/:id").delete((req, res, next) => {
   });
 });
 
-Unit.route("/quizentry/update/:id").post(function (req, res) {
-  UnitData.findById(req.params.id, function (err, units) {
+Unit.route("/quizentry/update/:id").post(function(req, res) {
+  UnitData.findById(req.params.id, function(err, units) {
     if (!units) {
       res.status(404).send("data is not found");
     } else {
