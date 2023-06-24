@@ -2,25 +2,25 @@ const mongoose = require("mongoose");
 
 const deleteUnit = new mongoose.Schema(
   {
-    chapterName: { 
-      type: String, 
-      required: true 
+    chapterName: {
+      type: String,
+      required: true,
     },
+    unitId: { type: mongoose.Types.ObjectId, ref: "UnitData" },
     unitName: {
-    type: String,
-    required: true
+      type: String,
+      required: true,
+    },
+    unitDesc: {
+      type: String,
+      required: true,
+    },
+    createdBy: { type: mongoose.Types.ObjectId, ref: "UserData" },
+    deletedBy: { type: mongoose.Types.ObjectId, ref: "UserData" },
+    updated_at: {
+      type: String,
+    },
   },
-  unitDesc: {
-    type: String,
-    required: true
-  },
-  createdBy: { type: mongoose.Types.ObjectId, ref: "UserData" },
-  deletedBy: { type: mongoose.Types.ObjectId, ref: "UserData" },
-  updated_at: {
-    type: String,
-     
-  },
-},
   {
     collection: "deleteunits",
   }
