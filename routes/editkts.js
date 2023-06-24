@@ -5,13 +5,15 @@ const UnitData = require("../models/unit.model");
 const moment = require("moment");
 
 editktRoutes.route("/").get(function (req, res) {
-  EditKTData.find(function (err, todo) {
-    if (err) {
-      console.log(err);
-    } else {
-      res.json(todo);
-    }
-  });
+  EditKTData.find()
+    .populate("updatedby")
+    .exec(function (err, todo) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.json(todo);
+      }
+    });
 });
 
 editktRoutes.route("/add").post(function (req, res) {

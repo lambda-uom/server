@@ -2,10 +2,15 @@ const mongoose = require("mongoose");
 
 const EditUnit = new mongoose.Schema(
   {
+    chapterName: {
+      type: String,
+      required: true,
+    },
     unitName: {
       type: String,
       required: true,
     },
+    unitId: { type: mongoose.Types.ObjectId, ref: "UnitData" },
     unitDesc: {
       type: String,
       required: true,

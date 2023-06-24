@@ -30,7 +30,7 @@ user?.get("/showAllUsers", async (req, res) => {
         //get the jobtitle name
         const jobTitle = departmentCollection?.Jobtitle?.find((jobtitle) =>
           jobtitle?._id?.equals(user?.jobPosition)
-        )?.jobTitle;
+        )?.jobTitlename;
         //make object of the data to be send to frontend
         let addUserRole = {
           ...user?.toObject(),
