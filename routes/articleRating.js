@@ -20,10 +20,10 @@ Article.get("/articleRatings/:empId", async (req, res) => {
       userImage: user?.userImage,
       empName: user?.firstName + " " + user?.lastName,
     };
-
     //find articles of requested user
     let articleRatings = await Articles.find({ createdBy: user?._id });
-    let articleRatingsData = [];
+    let articleRatingsData = {};
+    let artRatings = [];
 
     // if the required employee written article, continue
     if (articleRatings.length > 0) {
@@ -42,23 +42,23 @@ Article.get("/articleRatings/:empId", async (req, res) => {
 
       for (let ratings of articleRatings) {
         let article = {
-          articleName: ratings.articleName,
-          overallRating: ratings.overallRating,
+          articleName: ratings?.articleName,
+          overallRating: ratings?.overallRating,
         };
-        articleRatingsData.push(article);
+        artRatings.push(article);
         //data to progress bar
-        overAllRatingData.push(ratings.overallRating);
-        overAllQualityData.push(ratings.overallQuality);
-        overAllCommData.push(ratings.overallComm);
-        overAllClarityData.push(ratings.overallClarity);
-        overAllKnowledgeAndSkillData.push(ratings.overallKnowledgeAndSkill);
+        overAllRatingData.push(ratings?.overallRating);
+        overAllQualityData.push(ratings?.overallQuality);
+        overAllCommData.push(ratings?.overallComm);
+        overAllClarityData.push(ratings?.overallClarity);
+        overAllKnowledgeAndSkillData.push(ratings?.overallKnowledgeAndSkill);
 
         //storing overAllRating
-        overAllRating += ratings.overallRating;
-        overAllQuality += ratings.overallQuality;
-        overAllComm += ratings.overallComm;
-        overAllClarity += ratings.overallClarity;
-        overAllKnowledgeAndSkill += ratings.overallKnowledgeAndSkill;
+        overAllRating += ratings?.overallRating;
+        overAllQuality += ratings?.overallQuality;
+        overAllComm += ratings?.overallComm;
+        overAllClarity += ratings?.overallClarity;
+        overAllKnowledgeAndSkill += ratings?.overallKnowledgeAndSkill;
       }
 
       //progressbar data calculation
@@ -82,6 +82,7 @@ Article.get("/articleRatings/:empId", async (req, res) => {
         );
         //sum of stars
         let totalCount = count1 + count2 + count3 + count4 + count5;
+
         overAllRatingData = [
           parseFloat(((count1 / totalCount) * 100).toFixed(2)),
           parseFloat(((count2 / totalCount) * 100).toFixed(2)),
@@ -124,19 +125,20 @@ Article.get("/articleRatings/:empId", async (req, res) => {
         overAllClarityData,
         overAllKnowledgeAndSkillData,
       ];
-
-      articleRatingsData = {
-        articleRatingsData,
-        userData,
-        finalOverAllRating,
-        finalOverAllQuality,
-        finalOverAllComm,
-        finalOverAllClarity,
-        finalOverAllKnowledgeAndSkill,
-        numOfArticles: articleRatings.length,
-        overAllRatingData,
-        ratingData,
-      };
+      if (finalOverAllRating > 0) {
+        articleRatingsData = {
+          artRatings,
+          userData,
+          finalOverAllRating,
+          finalOverAllQuality,
+          finalOverAllComm,
+          finalOverAllClarity,
+          finalOverAllKnowledgeAndSkill,
+          numOfArticles: articleRatings.length,
+          overAllRatingData,
+          ratingData,
+        };
+      }
     }
     res.json(articleRatingsData);
   } catch (err) {
