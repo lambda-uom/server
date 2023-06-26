@@ -10,27 +10,11 @@ const Unit = new mongoose.Schema(
     createdOn: { type: Date, default: Date.now },
     status: { type: String, default: "active" },
     quiz: {
-      _id: {
-        type: mongoose.Schema.Types.ObjectId,
-        auto: true,
-      },
-      quizName: {
-        type: String,
-      },
-      quizDesc: {
-        type: String,
-      },
-      timeLimit: {
-        type: Number,
-        // required: true
-      },
+      quizName: { type: String, },
+      quizDesc: { type: String, },
+      timeLimit: { type: Number, },
       questions: [
         {
-          _id: {
-            type: mongoose.Schema.Types.ObjectId,
-            auto: true,
-            unique: true,
-          },
           question: {
             type: String,
           },

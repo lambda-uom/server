@@ -19,5 +19,21 @@ generalRoute.route("/general/depisempty").get(async (req, res) => {
     }
 });
 
+generalRoute.route("/general/dashboard-data/super-admin").get(async (req, res) => {
+    try {
+        let data={}
+        User.find({verified:false},(err, user)=>{
+            if(!err){
+                data.isUserVerificationPending = user.length
+                return res.json(data)
+            }
+        })
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 
 module.exports = generalRoute;
