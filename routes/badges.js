@@ -56,6 +56,7 @@ badges.post("/storeBadge", async (req, res) => {
       }
       leaderboard[i].rank = rank;
     }
+    // Bagdge is giving according to the leaderboard (based on every quiz submission)
     // get previous leaderboardCount field in the department collection
     const previousLeaderboard = await Departments.findOne({
       _id: currentUserDep,
@@ -88,72 +89,75 @@ badges.post("/storeBadge", async (req, res) => {
         res.json({ message: "Unit not found" });
       }
       for (let lbdata of leaderboard) {
-        let lbUser = await Users.findOne({ empId: lbdata?.empId });
-        if (!lbUser) {
-          res.json({ message: "User not found" });
-        }
-        let currentUserRank = lbdata?.rank;
-        if (quizSubmission?.badgeGiven === false) {
-          // if rank is less than 4
-          switch (currentUserRank) {
-            case 1:
-              //update badgeGiven field in the quizSubmission collection
-              await QuizSubmissions.findOneAndUpdate(
-                { userId: currentUser, unitId: unitId },
-                { badgeGiven: true }
-              );
-              //update badges array field in the user collection
-              lbUser?.badges?.push({
-                badgeValue: "Gold",
-                earnedOn: Date.now(),
-              });
-              lbUser?.save((err) => {
-                if (err) {
-                  throw err;
-                }
-              });
-              break;
-            case 2:
-              //update badgeGiven field in the quizSubmission collection
-              await QuizSubmissions.findOneAndUpdate(
-                { userId: currentUser, unitId: unitId },
-                { badgeGiven: true }
-              );
-              //update badges array field in the user collection
-              lbUser?.badges.push({
-                badgeValue: "Silver",
-                earnedOn: Date.now(),
-              });
-              lbUser?.save((err) => {
-                if (err) {
-                  throw err;
-                }
-              });
-              break;
-            case 3:
-              //update badgeGiven field in the quizSubmission collection
-              await QuizSubmissions.findOneAndUpdate(
-                { userId: currentUser, unitId: unitId },
-                { badgeGiven: true }
-              );
-              //update badges array field in the user collection
-              lbUser?.badges?.push({
-                badgeValue: "Bronze",
-                earnedOn: Date.now(),
-              });
-              lbUser?.save((err) => {
-                if (err) {
-                  throw err;
-                }
-              });
-              break;
-            default:
-              //update badgeGiven field in the quizSubmission collection
-              await QuizSubmissions.findOneAndUpdate(
-                { userId: currentUser, unitId: unitId },
-                { badgeGiven: true }
-              );
-              break;
+        // badge is given if the average score is greater than 40
+        if (lbdata?.averageScore > 40) {
+          let lbUser = await Users.findOne({ empId: lbdata?.empId });
+          if (!lbUser) {
+            res.json({ message: "User not found" });
+          }
+          let currentUserRank = lbdata?.rank;
+          if (quizSubmission?.badgeGiven === false) {
+            // if rank is less than 4
+            switch (currentUserRank) {
+              case 1:
+                //update badgeGiven field in the quizSubmission collection
+                await QuizSubmissions.findOneAndUpdate(
+                  { userId: currentUser, unitId: unitId },
+                  { badgeGiven: true }
+                );
+                //update badges array field in the user collection
+                lbUser?.badges?.push({
+                  badgeValue: "Gold",
+                  earnedOn: Date.now(),
+                });
+                lbUser?.save((err) => {
+                  if (err) {
+                    throw err;
+                  }
+                });
+                break;
+              case 2:
+                //update badgeGiven field in the quizSubmission collection
+                await QuizSubmissions.findOneAndUpdate(
+                  { userId: currentUser, unitId: unitId },
+                  { badgeGiven: true }
+                );
+                //update badges array field in the user collection
+                lbUser?.badges.push({
+                  badgeValue: "Silver",
+                  earnedOn: Date.now(),
+                });
+                lbUser?.save((err) => {
+                  if (err) {
+                    throw err;
+                  }
+                });
+                break;
+              case 3:
+                //update badgeGiven field in the quizSubmission collection
+                await QuizSubmissions.findOneAndUpdate(
+                  { userId: currentUser, unitId: unitId },
+                  { badgeGiven: true }
+                );
+                //update badges array field in the user collection
+                lbUser?.badges?.push({
+                  badgeValue: "Bronze",
+                  earnedOn: Date.now(),
+                });
+                lbUser?.save((err) => {
+                  if (err) {
+                    throw err;
+                  }
+                });
+                break;
+              default:
+                //update badgeGiven field in the quizSubmission collection
+                await QuizSubmissions.findOneAndUpdate(
+                  { userId: currentUser, unitId: unitId },
+                  { badgeGiven: true }
+                );
+                break;
+            }
           }
         }
       }
