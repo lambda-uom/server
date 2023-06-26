@@ -84,7 +84,7 @@ app.get("/", (req, res) => {
 
 app.get("/file/:filename", (req, res) => {
   const filename = req.params.filename;
-  if(! filename){
+  if (!filename) {
     return res.status(200).send("Please provide a filename");
   }
   // Replace with the actual file path

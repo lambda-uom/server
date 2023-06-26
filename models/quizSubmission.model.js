@@ -23,8 +23,8 @@ const QuizSubmission = new mongoose.Schema(
     },
     score: { type: Number },
     correctAnsCount: { type: Number },
-    attemptedTime: { type: Date },
-    submittedTime: { type: Date },
+    attemptedTime: { type: Date, default: Date.now() },
+    submittedTime: { type: Date, default: Date.now() },
     questions: [
       {
         questionValue: { type: String },

@@ -20,7 +20,6 @@ KtSession.get("/ktsessionRatings/:empId", async (req, res) => {
       userImage: user?.userImage,
       empName: user?.firstName + " " + user?.lastName,
     };
-
     let ktSessionRatings = await KtSessions.find({ createdBy: user?._id });
     let ktSessionRatingsData = {};
     let sessionData = [];
@@ -122,17 +121,19 @@ KtSession.get("/ktsessionRatings/:empId", async (req, res) => {
         overAllClarityData,
         overAllKnowledgeAndSkillData,
       ];
-      ktSessionRatingsData = {
-        sessionData,
-        userData,
-        finalOverAllRating,
-        finalOverAllQuality,
-        finalOverAllComm,
-        finalOverAllClarity,
-        finalOverAllKnowledgeAndSkill,
-        numOfKtSessions: ktSessionRatings?.length,
-        ratingData,
-      };
+      if (finalOverAllRating > 0) {
+        ktSessionRatingsData = {
+          sessionData,
+          userData,
+          finalOverAllRating,
+          finalOverAllQuality,
+          finalOverAllComm,
+          finalOverAllClarity,
+          finalOverAllKnowledgeAndSkill,
+          numOfKtSessions: ktSessionRatings?.length,
+          ratingData,
+        };
+      }
     }
     res.json(ktSessionRatingsData);
   } catch (err) {
