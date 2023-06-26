@@ -66,6 +66,18 @@ departmentRoutes
 departmentRoutes.route("/departments/addDepartment").post(async (req, res) => {
   const depName = req.body.departmentName;
   const createdOn = Date.now();
+
+  // Check if a department with the lowercase version of depName exists
+  const existingDepartment = await Department.findOne({
+    depName: { $regex: new RegExp(`^${depName}$`, "i") },  //'i' makes the search case-insensitive.
+  });
+  if (existingDepartment) {
+    return res.json({
+      message: "Department already exists",
+      status: false,
+    });
+  }
+
   const departmentDetails = new Department({    // Create a new department object
     depName,
     createdOn,
@@ -100,12 +112,27 @@ departmentRoutes.route("/departments/editDepartment").post(async (req, res) => {
   reason = req.body.reason;
   editedId = req.body.editedId;
   fromName = req.body.fromName;
+
+
+  // Check if a department with the lowercase version of depName exists
+  const existingDepartment = await Department.findOne({
+    depName: { $regex: new RegExp(`^${newName}$`, "i") },  //'i' makes the search case-insensitive.
+  });
+  if (existingDepartment) {
+    return res.json({
+      message: "Department already exists",
+      status: false,
+    });
+  }
+
+
   const newReasonObject = {   // Create a new reason object for the change
     reasonID: Math.floor(Date.now()) / 1000,
     reasonValue: reason,
     fromName: fromName,
     toName: newName,
   };
+
   try {
     const document = await Department.findById(editedId);  // Find the department being edited in the database
     document.reasons.push(newReasonObject);
