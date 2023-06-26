@@ -1,7 +1,7 @@
 const express = require("express");
 const Article = express.Router();
 
-const Articles = require("../models/article.model");
+const Articles = require("../models/Article.model");
 const Users = require("../models/user.model");
 
 Article.get("/articleRatings/:empId", async (req, res) => {
