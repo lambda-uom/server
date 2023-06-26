@@ -44,34 +44,44 @@ jobtitleRoutes
     });
   });
 //-------------------------------------------------------------------------------------------
-
-
 jobtitleRoutes.route("/jobtitles/addJobtitle").post(async (req, res) => {
   const jobTitlename = req.body.jobtitleName;
   const depID = req.body.depID;
-  // //const createdBy = "Name";
-  const createdOn = Date.now();
 
-  Department.findById(depID, (err, department) => {
-    if (err) {
-      console.log(err);
-    } else {
-      // Add some new marks to the array
-      department.Jobtitle.push({ jobTitlename: jobTitlename, createdOn: createdOn });
-      // Save the updated document
-      department.save((err) => {
-        if (err) {
-          console.log(err);
-        } else {
-          res.json({
-            message: "Jobtitle Added Successfully",
-            status: true,
-          })
-        }
+  try {
+    const department = await Department.findById(depID);
+    if (!department) {
+      return res.json({
+        message: "Department not found",
+        status: false,
       });
     }
-  });
 
+    const existingJobTitle = department.Jobtitle.find(
+      (jobtitle) => jobtitle.jobTitlename.toLowerCase() === jobTitlename.toLowerCase()
+    );
+    if (existingJobTitle) {
+      return res.json({
+        message: "Jobtitle already exists",
+        status: false,
+      });
+    }
+
+    const createdOn = Date.now();
+    department.Jobtitle.push({ jobTitlename, createdOn });
+    await department.save();
+
+    return res.json({
+      message: "Jobtitle Added Successfully",
+      status: true,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.json({
+      message: "Error adding jobtitle",
+      status: false,
+    });
+  }
 });
 
 //-----------------------------------------------------------------------------------------
@@ -88,12 +98,25 @@ jobtitleRoutes.route("/jobtitles/editJobtitle").post(async (req, res) => {
     });
   }
   const jobtitle = (departments.Jobtitle).filter(e => (e._id).equals(editedId))[0]
+
+  const existingJobTitle = departments.Jobtitle.find(
+    (e) => e.jobTitlename.toLowerCase() === newName.toLowerCase()
+  );
+  if (existingJobTitle && !existingJobTitle._id.equals(editedId)) {
+    return res.json({
+      message: "Jobtitle already exists",
+      status: false,
+    });
+  }
+
   jobtitle.reasons.push({
     reasonID: Date.now(),
     fromName: jobtitle.jobTitlename,
     newName: newName,
     reason: reason
   })
+
+
   jobtitle.jobTitlename = newName;
   departments.save((err, data) => {
     if (data) {
@@ -178,45 +201,32 @@ module.exports = jobtitleRoutes;
 
 
 
-//after the existing jobtitle validation- addjobtitle
-
+//before the existing jobtitle validation- addjobtitle
 
 // jobtitleRoutes.route("/jobtitles/addJobtitle").post(async (req, res) => {
 //   const jobTitlename = req.body.jobtitleName;
 //   const depID = req.body.depID;
+//   // //const createdBy = "Name";
+//   const createdOn = Date.now();
 
-//   try {
-//     const department = await Department.findById(depID);
-//     if (!department) {
-//       return res.json({
-//         message: "Department not found",
-//         status: false,
+//   Department.findById(depID, (err, department) => {
+//     if (err) {
+//       console.log(err);
+//     } else {
+//       // Add some new marks to the array
+//       department.Jobtitle.push({ jobTitlename: jobTitlename, createdOn: createdOn });
+//       // Save the updated document
+//       department.save((err) => {
+//         if (err) {
+//           console.log(err);
+//         } else {
+//           res.json({
+//             message: "Jobtitle Added Successfully",
+//             status: true,
+//           })
+//         }
 //       });
 //     }
+//   });
 
-//     const existingJobTitle = department.Jobtitle.find(
-//       (jobtitle) => jobtitle.jobTitlename === jobTitlename
-//     );
-//     if (existingJobTitle) {
-//       return res.json({
-//         message: "Jobtitle already exists",
-//         status: false,
-//       });
-//     }
-
-//     const createdOn = Date.now();
-//     department.Jobtitle.push({ jobTitlename, createdOn });
-//     await department.save();
-
-//     return res.json({
-//       message: "Jobtitle Added Successfully",
-//       status: true,
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     return res.json({
-//       message: "Error adding jobtitle",
-//       status: false,
-//     });
-//   }
 // });

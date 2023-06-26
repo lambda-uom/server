@@ -4,7 +4,7 @@ const FinalProjectAssignment = new mongoose.Schema(
   {
     userId: { type: mongoose.Types.ObjectId, ref: "UserData" },
     requestedDate: { type: Date, default: Date.now() },
-    departmentId: { type: mongoose.Types.ObjectId, ref: "DepartmentData"},
+    departmentId: { type: mongoose.Types.ObjectId, ref: "DepartmentData" },
 
     isProjectAssigned: { type: Boolean, default: false },
     isProjectSubmitted: { type: Boolean, default: false },
@@ -31,7 +31,7 @@ const FinalProjectAssignment = new mongoose.Schema(
     // Because, Both Supervisor, Hired Employees Submissions are here.
     // submittedFile: { type: String },
 
-    projectScore: { type: Number, default: 0 },
+    projectScore: { type: Number },
     feedback: { type: String },
     gradedOn: { type: Date },
     gradedBy: { type: mongoose.Types.ObjectId, ref: "UserData" },

@@ -49,6 +49,17 @@ commonchapterRoutes.route("/commonchapters/addChapter").post(async (req, res) =>
     const createdBy = req.body.userID;
     const createdOn = Date.now();
 
+    // Check if a chaptername with the lowercase version of chaptername exists
+    const existingChapter = await Chapter.findOne({
+        chapterName: { $regex: new RegExp(`^${chapterName}$`, "i") },  //'i' makes the search case-insensitive.
+    });
+    if (existingChapter) {
+        return res.json({
+            message: "ChapterName already exists",
+            status: false,
+        });
+    }
+
     const chapterDetails = new Chapter({
         chapterName,
         chapId,
@@ -83,6 +94,19 @@ commonchapterRoutes.route("/commonchapters/editChapter").post(async (req, res) =
     editedId = req.body.editedId;
     fromName = req.body.fromName;
     modifiedBy = req.body.modifiedBy
+
+    // Check if a chaptername with the lowercase version of chaptername exists
+    const existingChapter = await Chapter.findOne({
+        chapterName: { $regex: new RegExp(`^${newName}$`, "i") },  //'i' makes the search case-insensitive.
+    });
+    if (existingChapter) {
+        return res.json({
+            message: "ChapterName already exists",
+            status: false,
+        });
+    }
+
+
     const newReasonObject = {
         reasonID: Math.floor(Date.now()) / 1000,
         reasonValue: reason,
