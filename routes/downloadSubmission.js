@@ -14,7 +14,7 @@ downloadSubmission.get("/getZipFile/:empId", async (req, res) => {
     }
     let [projSub] = await FinalProjectAssignments.find({
       userId: user?._id,
-      isProjectSubmitted: { $exists: true },
+      isProjectSubmitted: true,
     });
 
     //if project submission is not found

@@ -15,6 +15,7 @@ const Department = new mongoose.Schema(
       },
     ],
     reasons: [{ type: Object }],
+    leaderboardCount: { type: Number, default: 0 },
   },
   {
     collection: "departments",

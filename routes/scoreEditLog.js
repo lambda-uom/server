@@ -81,19 +81,18 @@ scoreEditLog?.put("/updateScore", async (req, res) => {
 scoreEditLog?.get("/getScoreEditLog", async (req, res) => {
   try {
     let editlogArr = [];
-
     const editLog = await ScoreEditLog?.find();
     for (let editlog of editLog) {
       let editlogResult = {};
       //getting submitted employee name and empId
       const [user] = await Users.find({ _id: editlog.submittedBy });
-      const userEmpId = user?.empId;
-      const name = user?.firstName + " " + user?.lastName;
-      const employeeUserImage = user?.userImage;
       // if user is not found
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }
+      const userEmpId = user?.empId;
+      const name = user?.firstName + " " + user?.lastName;
+      const employeeUserImage = user?.userImage;
 
       //getting graded supervisor name
       let supervisor = [];
@@ -113,10 +112,9 @@ scoreEditLog?.get("/getScoreEditLog", async (req, res) => {
         };
         supervisor.push(supervisorDetails);
       }
-
       // formatting date and time
       let dateArr = [];
-      for (let time of editlog.upgradedOn) {
+      for (let time of editlog?.upgradedOn) {
         const monthNames = [
           "January",
           "February",
@@ -169,7 +167,7 @@ scoreEditLog?.get("/getScoreEditLog", async (req, res) => {
       }
       const department = await Department.findOne({ _id: user?.department });
       editlogResult = {
-        projectName: editlog.projectName,
+        projectName: editlog?.projectName,
         userEmpId,
         department: department?.depName,
         employeeUserImage,

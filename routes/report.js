@@ -33,7 +33,9 @@ user?.get("/showAllUsers", async (req, res) => {
         )?.jobTitlename;
         //make object of the data to be send to frontend
         let addUserRole = {
-          ...user?.toObject(),
+          empId: user?.empId,
+          firstName: user?.firstName,
+          lastName: user?.lastName,
           userRoleValue: user?.userRole,
           depName: departmentCollection?.depName,
           userImage: user?.userImage,
