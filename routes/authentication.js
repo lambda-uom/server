@@ -98,6 +98,12 @@ authenticationRoutes.route("/authentication/addFurtherDetails").post(async (req,
   let userRole = "";
   let message;
   if (usrCount.length === 0) {
+    if (emailAddress != "netslambda2023@gmail.com") {
+      return res.json({
+        message: "You are currently prohibited from logging in as a Super Admin. If you believe this is an error, please contact the company immediately.",
+        status: "verification failed"
+      });
+    }
     userRole = "Super Admin";
     verified = true;
     message = "You are promoted as Super Admin. Please login to continue";

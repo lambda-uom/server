@@ -37,6 +37,7 @@ Unit.route("/:id").get(function(req, res) {
 
 Unit.route("/add").post(function(req, res) {
   let units = new UnitData(req.body);
+  console.log(req.body);
   units
     .save()
     .then((u) => {
@@ -49,6 +50,7 @@ Unit.route("/add").post(function(req, res) {
       })
     })
     .catch((err) => {
+      console.log(err);
       res.status(400).send("adding new unit failed");
     });
 });
