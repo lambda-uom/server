@@ -12,7 +12,7 @@ projScore.get("/getProjScore/:supervisorId", async (req, res) => {
       res.json({ error: "Supervisor not found" });
     }
     const submission = await ProjectSubmissions.find({
-      // isProjectSubmitted: true,
+      isProjectSubmitted: true,
     });
 
     let scoreData = [];
