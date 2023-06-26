@@ -151,6 +151,26 @@ KtSession.get("/get-kt-ratings/:ktId", async (req, res) => {
   });
 });
 
+KtSession.get("/get-user-rated-kt/:ktId/:userId", async (req, res) => {
+  try {
+    const { ktId, userId } = req.params;
+
+    const kt = await KtSessions.findOne({
+      _id: ktId,
+      "ratings.userId": userId,
+    });
+
+    if (kt) {
+      res.json({ exists: true });
+    } else {
+      res.json({ exists: false });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 KtSession.route("/save-kt-ratings/:ktId").post(async (req, res) => {
   try {
     const ktId = req.params.ktId;
