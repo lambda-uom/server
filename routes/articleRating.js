@@ -125,6 +125,7 @@ Article.get("/articleRatings/:empId", async (req, res) => {
         overAllClarityData,
         overAllKnowledgeAndSkillData,
       ];
+      // if any article is rated
       if (finalOverAllRating > 0) {
         articleRatingsData = {
           artRatings,
