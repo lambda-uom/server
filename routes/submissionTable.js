@@ -82,7 +82,7 @@ submissionTable.get("/getSubmissionTable/:supervisorId", async (req, res) => {
           lastName: subUser?.lastName,
           submittedOn,
           projectName: finalProjAssign?.projectName,
-          status: finalProjAssign?.status,
+          status: finalProjAssign?.status, //whether it is graded or not
           isFileToDownload,
         };
         finalProjData.push(submiUser);

@@ -1,7 +1,7 @@
 const express = require("express");
 const Article = express.Router();
 
-const Articles = require("../models/article.model");
+const Articles = require("../models/Article.model");
 const Users = require("../models/user.model");
 
 Article.get("/articleRatings/:empId", async (req, res) => {
@@ -155,6 +155,26 @@ Article.get("/get-article-ratings/:articleId", async (req, res) => {
       res.status(200).json(arti.overallRating);
     }
   });
+});
+
+Article.get("/get-user-rated-article/:articleId/:userId", async (req, res) => {
+  try {
+    const { articleId, userId } = req.params;
+
+    const article = await Articles.findOne({
+      _id: articleId,
+      "ratings.userId": userId,
+    });
+
+    if (article) {
+      res.json({ exists: true });
+    } else {
+      res.json({ exists: false });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 Article.route("/save-article-ratings/:articleId").post(async (req, res) => {

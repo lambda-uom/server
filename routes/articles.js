@@ -15,8 +15,8 @@ const ArticleData = require("../models/article.model");
 Article.route("/").get(function(req, res) {
   const { chapterId } = req.query;
   // Filter the Articles based on the chapterId
-  const query = chapterId ? { belongsToChapter: chapterId } : {};
-  ArticleData.find(query, function(err, articles) {
+  // const query = chapterId ? { belongsToChapter: chapterId } : {};
+  ArticleData.find({belongsToChapter: chapterId}, function(err, articles) {
     if (err) {
       console.log(err);
       res.status(500).json({ error: "Internal Server Error" });
