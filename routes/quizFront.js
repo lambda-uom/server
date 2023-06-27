@@ -25,6 +25,7 @@ quizFront.get("/quizFront", async (req, res) => {
         if (chapter.unitsOffer.length > 0) {
           let count = 0;
           for (const unitId of chapter.unitsOffer) {
+            count = 0;
             // Find the unit object that matches the unit ID
             const unit = unitsData.find(
               (unit) => unit?._id.toString() === unitId.toString()
@@ -65,6 +66,7 @@ quizFront.get("/quizFront", async (req, res) => {
       if (chapter.unitsOffer.length > 0) {
         let count = 0;
         for (const unitId of chapter.unitsOffer) {
+          count = 0;
           // Find the unit object that matches the unit ID
           const unit = unitsData.find(
             (unit) => unit?._id.toString() === unitId.toString()
@@ -92,8 +94,8 @@ quizFront.get("/quizFront", async (req, res) => {
             units,
           });
       }
-      departments.push("Common Chapters");
     }
+    departments.push("Common Chapters");
     res.json({ chapters, departments });
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });
