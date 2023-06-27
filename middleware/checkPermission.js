@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const Forbidden = require("../models/ForbiddenAccesses.model");
 
 const auth = (userRoles) => {
   return (req, res, next) => {
@@ -20,19 +19,6 @@ const auth = (userRoles) => {
             // in next end point we can access this loggedInUser data
             req.loggedInUser = decoded.userData;
             next()
-          } else {
-            const newAccess = new Forbidden({
-              accessedURL: req.url,
-              accessedBy: decoded.userData._id,
-              currentUserRole: decoded.userData.userRole
-            });
-            newAccess.save((err, data) => {
-              if (!err) {
-                return res.status(403).json({ message: "Permission Denied, Recorded", status: false });
-              } else {
-                return res.status(403).json({ message: "Permission Denied, Not Recorded", status: false });
-              }
-            })
           }
         }
       });
