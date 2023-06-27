@@ -5,19 +5,19 @@ const sendMail = require("../mail/mailer");
 const auth = require("../middleware/checkPermission");
 const ur = require("../userRoles/userRoles");
 
-// userRoutes.route("/users/showAllUsers/systemadmin/:depid").get(auth([ur.systemAdmin]), function (req, res) {
-//   console.log("Logged in user");
-//   console.log(req.loggedInUser);
-//   User.find({department:req.params.depid})
-//     .populate({ path: "department", select: "depName createdBy" })
-//     .exec((err, users) => {
-//       if (err) {
-//         res.send(err);
-//       } else {
-//         res.json(users);
-//       }
-//     });
-// });
+userRoutes.route("/users/showAllUsers/systemadmin/:depid").get(auth([ur.systemAdmin]), function (req, res) {
+  console.log("Logged in user");
+  console.log(req.loggedInUser);
+  User.find({department:req.params.depid})
+    .populate({ path: "department", select: "depName createdBy" })
+    .exec((err, users) => {
+      if (err) {
+        res.send(err);
+      } else {
+        res.json(users);
+      }
+    });
+});
 
 userRoutes
   .route("/users/showAllUsers")
