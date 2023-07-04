@@ -1,6 +1,7 @@
 const express = require("express");
 const assignmentRoute = express.Router();
 const User = require('../models/user.model');
+require("dotenv").config();
 // const Notification = require('../models/Notification.model');
 const FinalProjectAssignment = require("../models/finalProjectAssignment.model");
 const path = require("path");
@@ -140,7 +141,7 @@ assignmentRoute.route("/addFinalAssignment").post(
                     projectName: req.body.title,
                     projectDescription: req.body.description,
                     projectDeadLine: req.body.deadline,
-                    uploadedFileBySupervisor: "http://localhost:1337/download/submission-attachments/" + req.file.filename,
+                    uploadedFileBySupervisor: process.env.BACKEND_ADDRESS+"/download/submission-attachments/" + req.file.filename,
                     supAttachNewFileName: req.file.filename,
                     supAttachOriginalName: req.file.originalname,
                     supAttachFileSize: req.file.size,
@@ -199,7 +200,7 @@ assignmentRoute.route("/addFinalProjectSubmission").post(
                 console.log("File Found")
                 updateObject = {
                     uploadedDescriptionByEmployee: req.body.note,
-                    uploadedFileByEmployee: "http://localhost:1337/download/submissions/" + req.file.filename,
+                    uploadedFileByEmployee: process.env.BACKEND_ADDRESS+"/download/submissions/" + req.file.filename,
                     empAttachOriginalName: req.file.originalname,
                     empAttachFileSize: req.file.size,
                     submittedDate: Date.now(),
@@ -316,7 +317,7 @@ assignmentRoute.route("/finalprojectassignment/updateFinalProjectAssignment").po
                 projectDescription: newDescription,
                 projectDeadLine: newDeadLine,
                 projectName: newTitle,
-                uploadedFileBySupervisor: "http://localhost:1337/download/submission-attachments/" + newFileData.filename,
+                uploadedFileBySupervisor: process.env.BACKEND_ADDRESS+"/download/submission-attachments/" + newFileData.filename,
                 supAttachNewFileName: newFileData.filename,
                 supAttachOriginalName: req.file.originalname,
                 supAttachFileSize: req.file.size,
@@ -371,7 +372,6 @@ assignmentRoute.route("/finalprojectassignment/updateFinalProjectAssignment").po
 
 assignmentRoute.route("/finalprojectassignment/deleteAssignedAssignment").post(async (req, res) => {
     const projectID = req.body.projectID;
-    // "http://localhost:1337/download/submission-attachments/" + req.file.filename,
     try {
         const assignments = await FinalProjectAssignment.findOne({ _id: projectID })
         if (assignments) {

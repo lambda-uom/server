@@ -28,6 +28,20 @@ Unit.route("/").get(function(req, res) {
   });
 });
 
+Unit.route("/numOfQuestions").get(function(req, res) {
+  const { chapterId } = req.query;
+  const query = chapterId ? { belongsToChapter: chapterId } : {};
+  UnitData.find(query, function(err, units) {
+    if (err) {
+      console.log(err);
+      res.status(500).json({ error: "Internal Server Error" });
+    } else {
+      const quesNum = (units.quiz.questions).length;
+      res.json({"quesNum": quesNum});
+    }
+  });
+});
+
 Unit.route("/:id").get(function(req, res) {
   let id = req.params.id;
   UnitData.findById(id, function(err, units) {

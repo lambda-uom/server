@@ -4,20 +4,20 @@ const moment = require('moment');
 const QuizSubmissionData = require('../models/quizSubmission.model');
 const UserData = require("../models/user.model"); // Import the User model
 const UnitData = require("../models/unit.model");
-
+const sendMail = require("../mail/mailer");
 var nodemailer = require('nodemailer');
 
-router.route('/').get(function(req, res) {
-  QuizSubmissionData.find(function(err, todo) {
-      if (err) {
-          console.log(err);
-      } else {
-          res.json(todo);
-      }
+router.route('/').get(function (req, res) {
+  QuizSubmissionData.find(function (err, todo) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.json(todo);
+    }
   });
 });
 
- 
+
 
 router.get('/find/:id/:userid', async (req, res) => {
   const { id, userid } = req.params;
@@ -66,7 +66,7 @@ router.post('/:unitId/:userId/:chapterid/:depid', (req, res) => {
       }
 
       // Retrieve the unit document for the submitted unit ID
-      UnitData.findById(unitId, (err, unit) => {
+      UnitData.findById(unitId, async (err, unit) => {
         if (err) {
           console.error(err);
           return res.status(500).send('Error retrieving unit data');
@@ -76,31 +76,24 @@ router.post('/:unitId/:userId/:chapterid/:depid', (req, res) => {
         const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
         // Add the notification sentence to the user's notification array
-        const notificationSentence = `${user.firstName} ${user.lastName} submitted the quiz in unit ${unit.unitName} at ${currentTime}`;
-
-        var transporter = nodemailer.createTransport({
-          service: 'gmail',
-          auth: {
-            user: 'nets.lambdauom@gmail.com',
-            pass: 'gnvhxwsbjqvnxprk'
+        const notificationSentence = `${user.firstName} ${user.lastName} submitted the quiz in unit ${unit.unitName} at ${currentTime}`
+        // Send mail
+        UserData.find({ department: depid, userRole: "System Admin" }, async (err, user) => {
+          if (err) {
+            console.error(err);
+            return res.status(500).send('Error retrieving user data');
           }
-        });
-        
-        var mailOptions = {
-          from: 'nets.lambdauom@gmail.com',
-          to: 'malikananayakkara69@gmail.com',
-          subject: 'Quiz Submissions',
-          text: notificationSentence
-        };
-         
-        transporter.sendMail(mailOptions, function(error, info){
-          if (error) {
-            console.log(error);
-          } else {
-            console.log('Email sent: ' + info.response);
+          const systemAdminMail = user[0].emailAddress;
+          var mailOptions = {
+            to: systemAdminMail,
+            subject: 'Quiz Submissions',
+            html: notificationSentence
+          };
+          const success = await sendMail(mailOptions)
+          if(success){
+            console.log("Mail Sent");
           }
-        });
-         
+        })
         return res.status(200).send('Quiz submission saved to database');
       });
     });

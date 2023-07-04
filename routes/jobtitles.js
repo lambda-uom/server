@@ -2,12 +2,13 @@ const express = require("express");
 const jobtitleRoutes = express.Router();
 const Department = require("../models/department.model");
 const User = require("../models/user.model")
+require("dotenv").config();
 
 //-----------------------------------------------------------------------------------------------
 jobtitleRoutes.route("/jobtitles").get(function (req, res) {
   res.json([
     {
-      url: "http://localhost:1337/jobtitles/showAllJobtitles",
+      url: process.env.BACKEND_ADDRESS+"/jobtitles/showAllJobtitles",
       method: "get",
       desc: "Shows all jobtitle's data from database",
     },

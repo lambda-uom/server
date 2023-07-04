@@ -2,13 +2,13 @@ const express = require("express");   //import express module
 const commonchapterRoutes = express.Router();
 const Chapter = require("../models/commonChapter.model");  //import the chapter model
 const User = require("../models/user.model");
-
+require("dotenv").config();
 
 
 commonchapterRoutes.route("/commonchapters").get(function (req, res) {
     res.json([
         {
-            url: "http://localhost:1337/commonchapters/showAllChapters",  //endpoint
+            url: process.env.BACKEND_ADDRESS+"/commonchapters/showAllChapters",  //endpoint
             method: "get",
             desc: "Shows all common Chapter's data from database",
         },

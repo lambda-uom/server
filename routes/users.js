@@ -194,27 +194,23 @@ userRoutes.route("/users/verifyuser").post(async (req, res) => {
   if (result === "allow") {
     User.updateOne({ _id: userID }, { $set: { verified: true } })
       .then(async (result) => {
-        // console.log(result)
         const mailOptions = {
           to: email,
           subject: "NETS | Profile Verification",
           html: "Your Profile is verified successfully. You can Login to your NETS account",
         };
         const success = await sendMail(mailOptions);
-        console.log(success);
         if (success) {
           console.log("Within if condition");
           return res.json({
             message: "User Verified Successfully. Mail Sent.",
             status: true,
           });
-          // return res.json({ "status": true })
         } else {
           return res.json({
             message: "User Verified Successfully. Mail Sent failed.",
             status: true,
           });
-          // return res.json({ "status": false })
         }
       })
       .catch((err) => {

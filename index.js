@@ -7,7 +7,11 @@ const path = require("path");
 const fs = require("fs");
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: [
+      "https://nets.raguraj.me/", 
+      "http://localhost:3000",
+      "https://netslambda.netlify.app",
+    ],
     methods: "GET,POST,PUT,DELETE,OPTIONS",
   })
 );
