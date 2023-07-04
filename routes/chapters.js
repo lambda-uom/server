@@ -301,7 +301,12 @@ chapterRoutes.route("/chapters/acceptRequest").post(function (req, res) {
     } else {
       // console.log(chapters);
       if (action == 1) {
-        User.updateOne({ _id: empid }, { $push: { acceptedAdditionalChapter: chapid } }, (err, users) => {
+        User.updateOne(
+          { _id: empid }, 
+          { $push: { 
+            acceptedAdditionalChapter: chapid, 
+            notifications:{message: "Your request for "+chapters?.chapterName+" chapter is accepted."} 
+          } }, (err, users) => {
           if (err) {
             console.log(err);
             res.json(
@@ -312,6 +317,7 @@ chapterRoutes.route("/chapters/acceptRequest").post(function (req, res) {
             );
           } else {
             console.log("Success")
+
             res.json(
               {
                 status: true,

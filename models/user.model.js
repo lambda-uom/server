@@ -28,7 +28,6 @@ const User = new mongoose.Schema(
         message: { type: String },
         time: { type: Date, default: Date.now() },
         seen: { type: Boolean, default: false },
-        extraData: { type: Object }
       }
     ]
   },

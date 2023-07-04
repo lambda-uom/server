@@ -219,9 +219,6 @@ assignmentRoute.route("/addFinalProjectSubmission").post(
                 { $set: updateObject },
                 async function (err, result) {
                     if (!err) {
-                        const user = await User.findById(supervisor);
-                        user.notifications.push({ message: "The final project you assigned is submitted" });
-                        user.save();
                         res.json({ status: true, message: "Final Project Submitted Successfully" });
                     } else {
                         res.json({ status: false, message: "Error in Submission" });
@@ -252,7 +249,7 @@ assignmentRoute.route("/finalprojectassignment/request/:uid/:did").get((req, res
                         ).then(() => {
                             res.json({ status: true, message: "Final Project Requested Successfully" });
                         }).catch((error) => {
-                            res.json({ status: true, message: "Final Project Requested Successfully" });
+                            res.json({ status: true, message: "Final Project Request Failed" });
                         })
                     })
                     .catch((err) => {

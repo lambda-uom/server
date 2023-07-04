@@ -32,7 +32,6 @@ notificationRoute.route("/notification/seen").post(async function (req, res) {
         const notificationID = req.body.notificationID
         const users = await Users.findById(userID);
         const currentNotification = users.notifications.find((notification) => notification._id == notificationID)
-        console.log(currentNotification);
         if (currentNotification) {
             currentNotification.seen = true;
             users.save();
