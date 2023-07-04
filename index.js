@@ -51,7 +51,6 @@ app.use(require("./routes/quizReport"));
 app.use(require("./routes/notifications"));
 app.use(require("./routes/feedback"));
 app.use(require("./routes/projectScore"));
-
 app.use("/units", require("./routes/units"));
 app.use("/kts", require("./routes/ktsessions"));
 app.use("/arts", require("./routes/articles"));
@@ -85,25 +84,7 @@ app.get("/", (req, res) => {
   });
 });
 
-
-app.get("/file/:filename", (req, res) => {
-  const filename = req.params.filename;
-  if (!filename) {
-    return res.status(200).send("Please provide a filename");
-  }
-  // Replace with the actual file path
-  const filePath = path.join(__dirname, `/uploads/finalAssignmentSubmissions/${filename}`);
-  fs.unlink(filePath, (err) => {
-    if (err) {
-      console.error(err);
-      res.status(500).send("Failed to delete the file.");
-    } else {
-      res.send("File deleted successfully.");
-    }
-  });
-});
-
-app.listen(1337, () => {
+app.listen(process.env.PORT, () => {
   ``;
   console.log("Node Server running on  port 1337");
 });
