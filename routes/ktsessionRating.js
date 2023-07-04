@@ -20,7 +20,10 @@ KtSession.get("/ktsessionRatings/:empId", async (req, res) => {
       userImage: user?.userImage,
       empName: user?.firstName + " " + user?.lastName,
     };
-    let ktSessionRatings = await KtSessions.find({ createdBy: user?._id });
+    let ktSessionRatings = await KtSessions.find({
+      createdBy: user?._id,
+      overallRating: { $gt: 0 },
+    });
     let ktSessionRatingsData = {};
     let sessionData = [];
 
@@ -75,7 +78,7 @@ KtSession.get("/ktsessionRatings/:empId", async (req, res) => {
             ? count3++
             : data === 4
             ? count4++
-            : count5++
+            : data === 5 && count5++
         );
         let totalCount = count1 + count2 + count3 + count4 + count5;
         overAllRatingData = [
@@ -207,22 +210,22 @@ KtSession.route("/save-kt-ratings/:ktId").post(async (req, res) => {
 
     console.log(qualityRateSum);
 
-    overallQualityRate = Math.floor(qualityRateSum / ratingCount);
-    overallCommRate = Math.floor(commRateSum / ratingCount);
-    overallClarityRate = Math.floor(clarityRateSum / ratingCount);
-    overallKnowledgeAndSkillRate = Math.floor(
+    overallQualityRate = (qualityRateSum / ratingCount).toFixed(2);
+    overallCommRate = (commRateSum / ratingCount).toFixed(2);
+    overallClarityRate = (clarityRateSum / ratingCount).toFixed(2);
+    overallKnowledgeAndSkillRate = (
       knowledgeAndSkillRateSum / ratingCount
-    );
+    ).toFixed(2);
 
     console.log(overallKnowledgeAndSkillRate);
 
-    overallRate = Math.floor(
+    overallRate = (
       (qualityRateSum +
         commRateSum +
         clarityRateSum +
         knowledgeAndSkillRateSum) /
-        (ratingCount * 4)
-    );
+      (ratingCount * 4)
+    ).toFixed(2);
 
     console.log(overallRate);
 
