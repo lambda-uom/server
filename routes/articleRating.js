@@ -21,7 +21,10 @@ Article.get("/articleRatings/:empId", async (req, res) => {
       empName: user?.firstName + " " + user?.lastName,
     };
     //find articles of requested user
-    let articleRatings = await Articles.find({ createdBy: user?._id });
+    let articleRatings = await Articles.find({
+      createdBy: user?._id,
+      overallRating: { $gt: 0 },
+    });
     let articleRatingsData = {};
     let artRatings = [];
 
@@ -78,7 +81,7 @@ Article.get("/articleRatings/:empId", async (req, res) => {
             ? count3++
             : data === 4
             ? count4++
-            : count5++
+            : data === 5 && count5++
         );
         //sum of stars
         let totalCount = count1 + count2 + count3 + count4 + count5;
@@ -213,22 +216,22 @@ Article.route("/save-article-ratings/:articleId").post(async (req, res) => {
 
     console.log(qualityRateSum);
 
-    overallQualityRate = Math.floor(qualityRateSum / ratingCount);
-    overallCommRate = Math.floor(commRateSum / ratingCount);
-    overallClarityRate = Math.floor(clarityRateSum / ratingCount);
-    overallKnowledgeAndSkillRate = Math.floor(
+    overallQualityRate = (qualityRateSum / ratingCount).toFixed(2);
+    overallCommRate = (commRateSum / ratingCount).toFixed(2);
+    overallClarityRate = (clarityRateSum / ratingCount).toFixed(2);
+    overallKnowledgeAndSkillRate = (
       knowledgeAndSkillRateSum / ratingCount
-    );
+    ).toFixed(2);
 
     console.log(overallKnowledgeAndSkillRate);
 
-    overallRate = Math.floor(
+    overallRate = (
       (qualityRateSum +
         commRateSum +
         clarityRateSum +
         knowledgeAndSkillRateSum) /
-        (ratingCount * 4)
-    );
+      (ratingCount * 4)
+    ).toFixed(2);
 
     console.log(overallRate);
 
