@@ -2,6 +2,7 @@ const express = require("express");
 const departmentRoutes = express.Router();
 const Department = require("../models/department.model");
 const User = require("../models/user.model")
+require("dotenv").config();
 //----------------------------------------------------------------------------------------------
 departmentRoutes.route("/getContentCreators/:depid").get(function (req, res) {
   const depID = req.params.depid;
@@ -17,7 +18,7 @@ departmentRoutes.route("/getContentCreators/:depid").get(function (req, res) {
 departmentRoutes.route("/departments").get(function (req, res) {
   res.json([
     {
-      url: "http://localhost:1337/departments/showAllDepartments",
+      url: process.env.BACKEND_ADDRESS+"/departments/showAllDepartments",
       method: "get",
       desc: "Shows all department's data from database",
     },

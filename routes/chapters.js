@@ -3,7 +3,7 @@ const chapterRoutes = express.Router();
 const Chapter = require("../models/chapter.model");  //import the chapter model
 const User = require("../models/user.model");
 const Department = require("../models/department.model");
-
+require("dotenv").config();
 chapterRoutes.route("/chapters/departmentChapters/:depid/").get(function (req, res) {
   const depid = req.params.depid;
   Chapter.find({ depID: depid }, (err, chapters) => {
@@ -18,7 +18,7 @@ chapterRoutes.route("/chapters/departmentChapters/:depid/").get(function (req, r
 chapterRoutes.route("/chapters").get(function (req, res) {
   res.json([
     {
-      url: "http://localhost:1337/chapters/showAllChapters",  //endpoint
+      url: process.env.BACKEND_ADDRESS+"/chapters/showAllChapters",  //endpoint
       method: "get",
       desc: "Shows all Chapter's data from database",
     },
