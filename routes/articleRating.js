@@ -216,22 +216,22 @@ Article.route("/save-article-ratings/:articleId").post(async (req, res) => {
 
     console.log(qualityRateSum);
 
-    overallQualityRate = Math.floor(qualityRateSum / ratingCount);
-    overallCommRate = Math.floor(commRateSum / ratingCount);
-    overallClarityRate = Math.floor(clarityRateSum / ratingCount);
-    overallKnowledgeAndSkillRate = Math.floor(
+    overallQualityRate = (qualityRateSum / ratingCount).toFixed(2);
+    overallCommRate = (commRateSum / ratingCount).toFixed(2);
+    overallClarityRate = (clarityRateSum / ratingCount).toFixed(2);
+    overallKnowledgeAndSkillRate = (
       knowledgeAndSkillRateSum / ratingCount
-    );
+    ).toFixed(2);
 
     console.log(overallKnowledgeAndSkillRate);
 
-    overallRate = Math.floor(
+    overallRate = (
       (qualityRateSum +
         commRateSum +
         clarityRateSum +
         knowledgeAndSkillRateSum) /
-        (ratingCount * 4)
-    );
+      (ratingCount * 4)
+    ).toFixed(2);
 
     console.log(overallRate);
 
