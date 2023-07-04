@@ -21,7 +21,10 @@ Article.get("/articleRatings/:empId", async (req, res) => {
       empName: user?.firstName + " " + user?.lastName,
     };
     //find articles of requested user
-    let articleRatings = await Articles.find({ createdBy: user?._id });
+    let articleRatings = await Articles.find({
+      createdBy: user?._id,
+      overallRating: { $gt: 0 },
+    });
     let articleRatingsData = {};
     let artRatings = [];
 
@@ -78,7 +81,7 @@ Article.get("/articleRatings/:empId", async (req, res) => {
             ? count3++
             : data === 4
             ? count4++
-            : count5++
+            : data === 5 && count5++
         );
         //sum of stars
         let totalCount = count1 + count2 + count3 + count4 + count5;

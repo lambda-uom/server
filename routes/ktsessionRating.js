@@ -20,7 +20,10 @@ KtSession.get("/ktsessionRatings/:empId", async (req, res) => {
       userImage: user?.userImage,
       empName: user?.firstName + " " + user?.lastName,
     };
-    let ktSessionRatings = await KtSessions.find({ createdBy: user?._id });
+    let ktSessionRatings = await KtSessions.find({
+      createdBy: user?._id,
+      overallRating: { $gt: 0 },
+    });
     let ktSessionRatingsData = {};
     let sessionData = [];
 
@@ -75,7 +78,7 @@ KtSession.get("/ktsessionRatings/:empId", async (req, res) => {
             ? count3++
             : data === 4
             ? count4++
-            : count5++
+            : data === 5 && count5++
         );
         let totalCount = count1 + count2 + count3 + count4 + count5;
         overAllRatingData = [
